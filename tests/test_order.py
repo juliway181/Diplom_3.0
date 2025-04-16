@@ -1,28 +1,24 @@
 import allure
 
-
-from constants import Constants
-from locators.locators_order import OrderPageLocators
 from pages.lk_page import LkPage
 from pages.login_page import LoginPage
 from pages.main_page import MainPage
 from pages.order_page import OrderPage
 
 
-
 class TestOrder:
     @allure.title('Проверка отображения окна с данными о заказе')
     def test_open_order(self, driver):
         order = OrderPage(driver)
-        order.get_url(Constants.URL_FEED)
+        order.go_feed_page()
         order.click_order()
-        assert order.get_text_from_element(OrderPageLocators.ORDER_STRUCTURE) == Constants.TEXT_ORDER_POPUP
+        assert order.check_order_structure()
 
     @allure.title('Заказ пользователя из раздела «История заказов» отображается на странице «Лента заказов»')
     def test_id_order_history_found_in_feed_orders(self, driver):
         login = LoginPage(driver)
-        login.get_url(Constants.URL_LOGIN)
-        login.login("juliway181@mail.ru", "123456789")
+        login.go_login_page()
+        login.login()
         create = MainPage(driver)
         create.add_filling_to_order()
         create.click_create_order_button()
@@ -40,8 +36,8 @@ class TestOrder:
     @allure.title('при создании нового заказа счётчик Выполнено за всё время увеличивается,')
     def test_total_counter_order(self, driver):
         login = LoginPage(driver)
-        login.get_url(Constants.URL_LOGIN)
-        login.login("juliway181@mail.ru", "123456789")
+        login.go_login_page()
+        login.login()
         create = MainPage(driver)
         create.click_feed_orders_button()
         order = OrderPage(driver)
@@ -58,8 +54,8 @@ class TestOrder:
     @allure.title('При создании нового заказа счётчик Выполнено за сегодня увеличивается')
     def test_daily_counter_order(self, driver):
         login = LoginPage(driver)
-        login.get_url(Constants.URL_LOGIN)
-        login.login("juliway181@mail.ru", "123456789")
+        login.go_login_page()
+        login.login()
         create = MainPage(driver)
         create.click_feed_orders_button()
         order = OrderPage(driver)
@@ -67,7 +63,6 @@ class TestOrder:
         create.click_constructor_button()
         create.add_filling_to_order()
         create.click_create_order_button()
-        print(counter_value)
         order.wait_loading_cross_button()
         order.click_cross_order()
         create.click_feed_orders_button()
@@ -77,8 +72,8 @@ class TestOrder:
     @allure.title('После оформления заказа его номер появляется в разделе в работе')
     def test_new_order_show_work_list(self, driver):
         login = LoginPage(driver)
-        login.get_url(Constants.URL_LOGIN)
-        login.login("juliway181@mail.ru", "123456789")
+        login.go_login_page()
+        login.login()
         create = MainPage(driver)
         create.add_filling_to_order()
         create.click_create_order_button()
