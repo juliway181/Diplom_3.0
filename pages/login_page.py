@@ -1,8 +1,14 @@
 import allure
+
+from constants import Constants
 from locators.locators_login_page import LogLocators
 from pages.base_page import BasePage
 
 class LoginPage(BasePage):
+
+    @allure.step("Переход на страницу")
+    def go_login_page(self):
+        self.get_url(Constants.URL_LOGIN)
 
     @allure.step("Ввод email")
     def input_email(self, email):
@@ -20,8 +26,8 @@ class LoginPage(BasePage):
     def click_reset_password_button(self):
         self.click_on_element(LogLocators.FORGOT_BUTTON)
 
-
-    def login(self, email, pswd):
+    @allure.step("Авторизоваться")
+    def login(self, email="juliway181@mail.ru", pswd="123456789"):
         self.input_email(email)
         self.input_pswd(pswd)
         self.click_enter_button()

@@ -1,13 +1,17 @@
 import allure
 from selenium.webdriver import ActionChains
-from selenium.webdriver.support import expected_conditions
-from selenium.webdriver.support.wait import WebDriverWait
+
+from constants import Constants
 from locators.locators_main_page import MainPageLocators
 from pages.base_page import BasePage
 
 
 
 class MainPage(BasePage):
+    @allure.step("Переход на страницу")
+    def go_main_page(self):
+        self.get_url(Constants.URL)
+
     @allure.step("Клик на кнопку 'Личный кабинет'")
     def click_lk_button(self):
         self.click_on_element(MainPageLocators.LK_BUTTON)
@@ -29,9 +33,9 @@ class MainPage(BasePage):
         self.click_on_element(MainPageLocators.CROSS_BUTTON)
 
     @allure.step("Проверка окна с деталями ингредиента")
-    def check_ingredient_details(self, text):
-        ingredient = self.set_text_to_elemet(MainPageLocators.TEXT_WINDOW_INGR)
-        return text == ingredient
+    def check_ingredient_details(self):
+        ingredient = self.get_text_from_element(MainPageLocators.TEXT_WINDOW_INGR)
+        return ingredient == Constants.INGR_DETAILS
 
     @allure.step('Получение значения счетчика ингредиентов')
     def get_counter_ingredient_by_index(self):
@@ -39,14 +43,11 @@ class MainPage(BasePage):
 
     @allure.step("Проверить нахождение элемента на странице")
     def check_displayed_ingredient_details(self):
-        check = WebDriverWait(self.driver, 10).until(expected_conditions.presence_of_element_located
-                                                     (MainPageLocators.TEXT_WINDOW_INGR))
-        return check.is_displayed()
+        return self.check_element_located(MainPageLocators.TEXT_WINDOW_INGR).is_displayed()
 
     @allure.step('Проверить невидимость элемента')
     def check_invisibility_ingredient_details(self):
-        return WebDriverWait(self.driver, 10).until(expected_conditions.invisibility_of_element
-                                                    (MainPageLocators.TEXT_WINDOW_INGR))
+        return self.check_invisibility_element(MainPageLocators.TEXT_WINDOW_INGR)
 
 
     @allure.step('Перетащить Булочку>')
@@ -63,3 +64,20 @@ class MainPage(BasePage):
     def check_create_order(self, text):
         issued = self.find_element_with_wait(MainPageLocators.ORDER_IDENTIFIER)
         return issued.text
+
+    @allure.step('Проверка url account')
+    def check_url_acc(self):
+        return self.check_url(Constants.URL_ACC)
+
+    @allure.step('Проверка url')
+    def check_url_main(self):
+        return self.check_url(Constants.URL)
+
+    @allure.step('Проверка url feed')
+    def check_url_feed(self):
+        return self.check_url(Constants.URL_FEED)
+
+    @allure.step("Проверка окна создания заказа")
+    def check_order(self):
+        ingredient = self.get_text_from_element(MainPageLocators.ORDER_IDENTIFIER)
+        return ingredient == Constants.TEXT_CR_ORDER
